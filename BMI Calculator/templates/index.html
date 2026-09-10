@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Health Dashboard & Analytics</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="background-glow"></div>
+    
+    <div class="app-container">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="brand">
+                <div class="logo-icon">⚖️</div>
+                <div>
+                    <h1>BMI Calculator <span>Analytics</span></h1>
+                    <p>Track your health metrics, history, and trends in real-time</p>
+                </div>
+            </div>
+            <div class="server-badge">
+                <span class="pulse-dot"></span>
+                Localhost:5000 Active
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <div class="dashboard-grid">
+            <!-- Left Column: Calculator Card -->
+            <section class="card glass-card calculator-card">
+                <div class="card-header">
+                    <h2><span class="icon">📐</span> Calculate BMI</h2>
+                    <span class="subtitle">Enter metrics to analyze</span>
+                </div>
+
+                <form id="bmiForm" class="calc-form">
+                    <div class="form-group">
+                        <label for="userName">User Name</label>
+                        <div class="input-wrapper">
+                            <span class="field-icon">👤</span>
+                            <input type="text" id="userName" placeholder="e.g. Alex Smith" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="weight">Weight (kg)</label>
+                            <div class="input-wrapper">
+                                <span class="field-icon">⚖️</span>
+                                <input type="number" id="weight" step="0.1" min="1" max="500" placeholder="70.5" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="height">Height (m)</label>
+                            <div class="input-wrapper">
+                                <span class="field-icon">📏</span>
+                                <input type="number" id="height" step="0.01" min="0.5" max="3.0" placeholder="1.75" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="calcBtn" class="btn btn-primary">
+                        <span>Calculate BMI</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
+                </form>
+
+                <!-- Result Display Box -->
+                <div id="resultBox" class="result-box hidden">
+                    <div class="result-top">
+                        <span class="result-label">Calculated Score</span>
+                        <span id="categoryBadge" class="category-badge">Normal</span>
+                    </div>
+                    
+                    <div class="score-display">
+                        <span id="bmiScore" class="score-value">22.86</span>
+                        <span class="score-unit">kg/m²</span>
+                    </div>
+
+                    <!-- Progress Gauge Bar -->
+                    <div class="gauge-bar">
+                        <div id="gaugeIndicator" class="gauge-fill"></div>
+                    </div>
+                    <div class="gauge-ticks">
+                        <span>18.5</span>
+                        <span>25.0</span>
+                        <span>30.0</span>
+                    </div>
+
+                    <p id="recommendationText" class="recommendation-text">
+                        Your weight is in the healthy WHO range for your height.
+                    </p>
+
+                    <button type="button" id="saveBtn" class="btn btn-secondary">
+                        💾 Save to Database History
+                    </button>
+                </div>
+            </section>
+
+            <!-- Right Column: Analytics & Multi-User History -->
+            <section class="card glass-card analytics-card">
+                <div class="card-header space-between">
+                    <div>
+                        <h2><span class="icon">📈</span> Health Trends & History</h2>
+                        <span class="subtitle">Multi-user persistent analytics</span>
+                    </div>
+                    <div class="user-picker">
+                        <label for="userSelect">Profile:</label>
+                        <select id="userSelect" class="styled-select">
+                            <option value="">Select User...</option>
+                        </select>
+                        <button type="button" id="refreshUsersBtn" class="btn-icon" title="Refresh User List">🔄</button>
+                    </div>
+                </div>
+
+                <!-- Empty State Banner -->
+                <div id="emptyState" class="empty-state">
+                    <div class="empty-icon">📊</div>
+                    <h3>No Profile Selected</h3>
+                    <p>Calculate and save a record or select an existing user to view their trend chart and history.</p>
+                </div>
+
+                <!-- Chart Container -->
+                <div id="chartWrapper" class="chart-wrapper hidden">
+                    <canvas id="trendChart"></canvas>
+                </div>
+
+                <!-- History Table -->
+                <div id="tableWrapper" class="table-wrapper hidden">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Weight</th>
+                                <th>Height</th>
+                                <th>BMI</th>
+                                <th>Category</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- Toast Notifications Container -->
+        <div id="toastContainer" class="toast-container"></div>
+    </div>
+
+    <!-- Application Script -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
